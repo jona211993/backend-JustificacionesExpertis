@@ -18,8 +18,8 @@ export const checkExistingUser = async (req, res, next) => {
         // Para el dni:
         let sql2 = `EXECUTE spobtener_usuario_by_dni '${req.body.dni}'`;
         const pool2 = await getConnection();
-        const result2= await pool.request().query(sql2);
-        let userFound2 = result.recordset;
+        const result2= await pool2.request().query(sql2);
+        let userFound2 = result2.recordset;
         if (userFound2.length==1){
            console.log(userFound2)
           return res.status(400).json({ message: "Ya existe un usuario con ese DNI"});}
@@ -28,3 +28,18 @@ export const checkExistingUser = async (req, res, next) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+export const verifyToken= async (req, res, next) => {
+  try {
+     const token = req.header["x-acces-token"];
+     if(!token) return res.status(403).json({message:"No se encontró el token"})
+    
+        const decoded = jwt.verify(token,config.SECRET)
+        req.userId=decoded.id;
+             
+        next()
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: "Error interno del servidor" });
+  }
+}
