@@ -1,5 +1,6 @@
 import { getConnection } from "../database/connection.js";
-
+import jwt from 'jsonwebtoken'
+import config from "../config.js";
 //Jonatan Pacora Vega
 // Esta funcion es para verificacion la existencia de un usuario con el mismo username
 // O si el correo ya existe en la base de datos
@@ -31,15 +32,18 @@ export const checkExistingUser = async (req, res, next) => {
 
 export const verifyToken= async (req, res, next) => {
   try {
-     const token = req.header["x-acces-token"];
+     const {token}= req.cookies;     
      if(!token) return res.status(403).json({message:"No se encontró el token"})
     
-        const decoded = jwt.verify(token,config.SECRET)
-        req.userId=decoded.id;
+        const decoded = jwt.verify(token,config.SECRET, (err, user)=> {
+          if (err) return res.status(403).json({message: "Token invalido"});
+          req.user= user;
+          next()
+        })
+       
              
-        next()
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ error: "Error interno del servidor" });
+    return res.status(500).json({ error: "Error interno del servidor ", message: error.message });
   }
-}
+};

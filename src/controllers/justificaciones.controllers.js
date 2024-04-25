@@ -1,8 +1,6 @@
 import { getConnection } from "../database/connection.js";
 import sql from "mssql";
 
-
-
 export const getJustificaciones = async (req, res) => {
   const pool = await getConnection();
   const result = await pool.request().query("SELECT * FROM justificaciones");
@@ -10,6 +8,8 @@ export const getJustificaciones = async (req, res) => {
 };
 
 export const getJustificacionesBySuper = async (req, res) => {
+  console.log("estamos acaaa")
+  console.log(req.user)
   const { grupo } = req.body;
   try {
     const pool = await getConnection();
@@ -55,3 +55,4 @@ export const createJustificacion = async (req, res) => {
     res.status(500).json({ message: "Error interno del servidor" });
   }
 };
+

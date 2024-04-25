@@ -1,6 +1,7 @@
 import { getConnection } from "../database/connection.js";
 import jwt from "jsonwebtoken";
 import config from "../config.js";
+
 export const signUp = async (req, res) => {
   try {
     const {
@@ -55,24 +56,36 @@ export const signIn = async (req, res) => {
   if (usuarioEncontrado) {
       const token = jwt.sign(
       {
-        identificador: usuarioEncontrado.id,
+        _id: usuarioEncontrado.id,
         id_cargo: usuarioEncontrado.id_cargo,
+        alias: usuarioEncontrado.usuario,
         nombre: usuarioEncontrado.nombre,
+
       },
       config.SECRET,
       {
         expiresIn: 86400,
       }
     );
+    res.cookie("token", token)
     res.status(200).json({ 
       message: "Login correcto",token });
   } else {
-    return res.status(400).json({ message: "Credenciales incorrectas" });
+    return res.status(400).json({ message: "Credenciales incorrectas"});
   }
  } catch (error) {
   console.error(error);
-    return res.status(500).json({ error: "Error interno del servidor" });
+    return res.status(500).json({ error: "Error interno del servidor : "+ error.message });
  }
 
   
 };
+
+export const logout = (req,res)=> {
+  res.cookie('token',"", {
+    expires: new Date(0),
+  });
+
+  return res.sendStatus(200)
+}
+
