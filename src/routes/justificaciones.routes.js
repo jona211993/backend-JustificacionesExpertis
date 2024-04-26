@@ -7,7 +7,7 @@ const router = Router()
 
 router.get('/obtenerJustificaciones',[verifyToken], getJustificaciones)
 router.get('/obtenerJustPorSuper',[verifyToken] ,getJustificacionesBySuper)
-router.post('/crearJustificacion', [verifyToken],createJustificacion)
+router.post('/crearJustificacion', createJustificacion)
 router.delete('/eliminarJustificacion/:id',[verifyToken],)
 router.put('/actualizarJustificacion/:id',[verifyToken],)
 
