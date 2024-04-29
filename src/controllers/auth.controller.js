@@ -53,6 +53,7 @@ export const signIn = async (req, res) => {
   const pool = await getConnection();
   const result = await pool.request().query(sql);
   let usuarioEncontrado = result.recordset[0];  
+  console.log(usuarioEncontrado)
   if (usuarioEncontrado) {
       const token = jwt.sign(
       {
@@ -71,7 +72,7 @@ export const signIn = async (req, res) => {
     res.status(200).json({ 
       message: "Login correcto",token });
   } else {
-    return res.status(400).json({ message: "Credenciales incorrectas"});
+    return res.status(400).json([ "Credenciales incorrectas"]);
   }
  } catch (error) {
   console.error(error);
