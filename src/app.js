@@ -6,6 +6,7 @@ import cors from 'cors';
 import authRoues from './routes/auht.routes.js';
 import matrizRoutes from './routes/matriz.routes.js'
 import justificacionesRoutes from './routes/justificaciones.routes.js'
+import  solicitudesRoutes from './routes/solicitudes.routes.js'
 const app = express();
 
 app.use(morgan('dev'));
@@ -18,7 +19,8 @@ app.use(cors({
 // rutas
 app.use('/api/',authRoues);
 app.use(matrizRoutes);
-app.use(justificacionesRoutes);
+app.use('/api/',solicitudesRoutes);
+app.use('/api/',justificacionesRoutes);
 
 
 export default app;

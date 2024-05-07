@@ -47,46 +47,55 @@ export const signUp = async (req, res) => {
 };
 
 export const signIn = async (req, res) => {
- try {
-  const { usuario, password } = req.body;
-  let sql = `SELECT * FROM empleado where usuario='${usuario}' and contrasenia='${password}'`;
-  const pool = await getConnection();
-  const result = await pool.request().query(sql);
-  let usuarioEncontrado = result.recordset[0];  
-  console.log(usuarioEncontrado)
-  if (usuarioEncontrado) {
-      const token = jwt.sign(
-      {
+  try {
+    const { usuario, password } = req.body;
+    let sql = `SELECT * FROM empleado where usuario='${usuario}' and contrasenia='${password}'`;
+    const pool = await getConnection();
+    const result = await pool.request().query(sql);
+    let usuarioEncontrado = result.recordset[0];
+
+    if (usuarioEncontrado) {
+      let user = {
         _id: usuarioEncontrado.id,
         id_cargo: usuarioEncontrado.id_cargo,
-        alias: usuarioEncontrado.usuario,
-        nombre: usuarioEncontrado.nombre,
+        id_grupo: usuarioEncontrado.id_grupo,
+        usuario: usuarioEncontrado.usuario,
+        estado: usuarioEncontrado.estado,
+      };
 
-      },
-      config.SECRET,
-      {
-        expiresIn: 86400,
-      }
-    );
-    res.cookie("token", token)
-    res.status(200).json({ 
-      message: "Login correcto",token });
-  } else {
-    return res.status(400).json([ "Credenciales incorrectas"]);
+      const token = jwt.sign(
+        {
+          _id: usuarioEncontrado.id,
+          id_cargo: usuarioEncontrado.id_cargo,
+          alias: usuarioEncontrado.usuario,
+          nombre: usuarioEncontrado.nombre,
+        },
+        config.SECRET,
+        {
+          expiresIn: 86400,
+        }
+      );
+      res.cookie("token", token);
+      res.status(200).json({
+        message: "Login correcto",
+        token,
+        user,
+      });
+    } else {
+      return res.status(400).json(["Credenciales incorrectas"]);
+    }
+  } catch (error) {
+    console.error(error);
+    return res
+      .status(500)
+      .json({ error: "Error interno del servidor : " + error.message });
   }
- } catch (error) {
-  console.error(error);
-    return res.status(500).json({ error: "Error interno del servidor : "+ error.message });
- }
-
-  
 };
 
-export const logout = (req,res)=> {
-  res.cookie('token',"", {
+export const logout = (req, res) => {
+  res.cookie("token", "", {
     expires: new Date(0),
   });
 
-  return res.sendStatus(200)
-}
-
+  return res.sendStatus(200);
+};
