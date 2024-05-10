@@ -12,7 +12,7 @@ export const getJustificacionesBySuper = async (req, res) => {
   const { grupo } = req.body;
   console.log(grupo)
   try {
-    let sql = `spobtener_asesores_by_supervisor '${grupo}'`
+    let sql = `spobtener_justificaciones_by_supervisor '${grupo}'`
     const pool = await getConnection();
     const result = await pool.request().query(sql);
     const data=result.recordset;
