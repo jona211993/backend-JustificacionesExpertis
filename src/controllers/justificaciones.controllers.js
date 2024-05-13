@@ -65,3 +65,24 @@ export const createJustificacion = async (req, res) => {
   }
 };
 
+export const getJustifById = async (req, res) =>{
+  const {id} =req.params;
+  console.log(id);
+  try {
+    let sql4 = `spobtener_justif_by_id '${id}'`;
+    const pool4 = await getConnection();
+    const result4 = await pool4.request().query(sql4);
+    const data4 = result4.recordset;
+    console.log(data4);
+    if (data4 && data4.length > 0) {
+      return res.status(200).json({ data4 });
+    } else {
+      return res.status(404).json({ message: "No se encontraron justificaciones para este grupo" });
+    }
+  } catch (error) {
+    console.error("Error en la consulta SQL:", error.message);
+    return res.status(400).json({ message: "Error al obtener las justificaciones" });
+  }
+
+
+}
