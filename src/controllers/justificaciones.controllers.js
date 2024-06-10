@@ -8,41 +8,87 @@ export const getJustificaciones = async (req, res) => {
 };
 
 export const getJustificacionesBySuper = async (req, res) => {
-  
   const { grupo } = req.body;
-  console.log(grupo)
-  try {
-    let sql = `spobtener_justificaciones_by_supervisor '${grupo}'`
-    const pool = await getConnection();
-    const result = await pool.request().query(sql);
-    const data=result.recordset;
-    console.log(data)
-    if (result.recordset && result.recordset.length > 0) {
-       return res.status(200).json({
-        data
-      });
-    } else {
+  console.log("se recibe en body:", grupo);
+
+  if (grupo == 1) {
+    try {
+      console.log("se recibe en body:", grupo);
+      let sql = `spobtener_justificaciones_only_super`;
+      const pool = await getConnection();
+      const result = await pool.request().query(sql);
+      const data = result.recordset;
+      console.log(data);
+      if (result.recordset && result.recordset.length >= 0) {
+        return res.status(200).json({
+          data,
+        });
+      } else {
+        return res
+          .status(404)
+          .json({ message: "No se pudo obtener los asesores del supervisor" });
+      }
+    } catch (error) {
+      console.error("Error en la consulta SQL:", error.message); // Agrega esta línea para obtener información detallada del error
       return res
-        .status(404)
-        .json({ message: "No se pudo obtener los asesores del supervisor" });
+        .status(400)
+        .json({ message: "Error al obtener asesores del supervisor" });
     }
-    
-  } catch (error) {
-    console.error("Error en la consulta SQL:", error.message); // Agrega esta línea para obtener información detallada del error
-    return res.status(400).json({ message: "Error al obtener asesores del supervisor" });
+  } else {
+    try {
+      console.log("se recibe en body:", grupo);
+      let sql = `spobtener_justificaciones_by_id_grupo ${grupo}`;
+      const pool = await getConnection();
+      const result = await pool.request().query(sql);
+      const data = result.recordset;
+      console.log(data);
+      if (result.recordset && result.recordset.length >= 0) {
+        return res.status(200).json({
+          data,
+        });
+      } else {
+        return res
+          .status(404)
+          .json({ message: "No se pudo obtener los asesores del supervisor" });
+      }
+    } catch (error) {
+      console.error("Error en la consulta SQL:", error.message); // Agrega esta línea para obtener información detallada del error
+      return res
+        .status(400)
+        .json({ message: "Error al obtener asesores del supervisor" });
+    }
   }
 };
 
 export const createJustificacion = async (req, res) => {
+  const {
+    fecha,
+    asesor,
+    id_empleado,
+    grupo,
+    nivel1,
+    nivel2,
+    nivel3,
+    observacion,
+    minutos_permiso,
+  } = req.body;
 
-  const { fecha, asesor, id_empleado,grupo, nivel1, nivel2, nivel3, observacion, minutos_permiso } = req.body;
-
-  console.log(fecha, asesor, grupo, nivel1, nivel2, nivel3, observacion, minutos_permiso,id_empleado);
+  console.log(
+    fecha,
+    asesor,
+    grupo,
+    nivel1,
+    nivel2,
+    nivel3,
+    observacion,
+    minutos_permiso,
+    id_empleado
+  );
 
   try {
     const pool = await getConnection();
     const result = await pool
-      .request()      
+      .request()
       .input("asesor", sql.VarChar, asesor)
       .input("grupo", sql.VarChar, grupo)
       .input("nivel1", sql.VarChar, nivel1)
@@ -56,17 +102,15 @@ export const createJustificacion = async (req, res) => {
         "INSERT INTO justificaciones (fecha, asesor, grupo, nivel1, nivel2, nivel3,observacion, minutos_permiso, id_empleado) " +
           "VALUES (@fecha, @asesor, @grupo, @nivel1, @nivel2, @nivel3,@observacion, @minutos_permiso, @id_empleado)"
       );
-    res.json(result.recordset);  
-
-     
+    res.json(result.recordset);
   } catch (error) {
     console.error("Error al crear la justificación:", error.message);
     res.status(500).json({ message: "Error interno del servidor" });
   }
 };
 
-export const getJustifById = async (req, res) =>{
-  const {id} =req.params;
+export const getJustifById = async (req, res) => {
+  const { id } = req.params;
   console.log(id);
   try {
     let sql4 = `spobtener_justif_by_id '${id}'`;
@@ -77,12 +121,14 @@ export const getJustifById = async (req, res) =>{
     if (data4 && data4.length > 0) {
       return res.status(200).json({ data4 });
     } else {
-      return res.status(404).json({ message: "No se encontraron justificaciones para este grupo" });
+      return res
+        .status(404)
+        .json({ message: "No se encontraron justificaciones para este grupo" });
     }
   } catch (error) {
     console.error("Error en la consulta SQL:", error.message);
-    return res.status(400).json({ message: "Error al obtener las justificaciones" });
+    return res
+      .status(400)
+      .json({ message: "Error al obtener las justificaciones" });
   }
-
-
-}
+};

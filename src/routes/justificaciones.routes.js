@@ -8,7 +8,7 @@ const router = Router()
 
 router.get('/obtenerJustificaciones', getJustificaciones)
 router.get('/obtenerJustifPorID/:id', getJustifById)
-router.post('/obtenerJustPorSuper' ,getJustificacionesBySuper)
+router.post('/obtenerJustsPorSuper' ,getJustificacionesBySuper)
 router.post('/obtenerAsesoresPorSuper' ,getAsesoresBySuper)
 router.post('/crearJustificacion', createJustificacion)
 router.delete('/eliminarJustificacion/:id',[verifyToken],)
