@@ -18,7 +18,7 @@ app.use(cookieParser());
 // Lista de orígenes permitidos
 const allowedOrigins = [
     'https://expertis-erp.pages.dev',
-    'https://36d1-190-237-162-48.ngrok-free.app',
+    'https://7c61c29e.expertis-erp.pages.dev',         
     'http://localhost:5173'
 ];
 
@@ -26,7 +26,6 @@ const corsOptions = {
     origin: function (origin, callback) {
         // Permitir solicitudes sin origen (como las hechas desde Postman o cURL)
         if (!origin) return callback(null, true);
-
         // Verificar si el origen está en la lista de permitidos
         if (allowedOrigins.indexOf(origin) !== -1) {
             callback(null, true);
@@ -48,6 +47,11 @@ app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Credentials', 'true');
     res.setHeader('Access-Control-Allow-Methods', 'GET,HEAD,OPTIONS,POST,PUT');
     res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+       // Responder a las solicitudes OPTIONS de verificación preflight
+       if (req.method === 'OPTIONS') {
+        return res.sendStatus(200);
+    }
+
     next();
 });
 
