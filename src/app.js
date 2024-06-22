@@ -18,8 +18,8 @@ app.use(cookieParser());
 // Lista de orígenes permitidos
 const allowedOrigins = [
     'https://expertis-erp.pages.dev',
-    'https://7c61c29e.expertis-erp.pages.dev',         
-    'http://localhost:5173'
+    'http://localhost:5173',
+    'https://e4bf-161-132-214-102.ngrok-free.app/api'
 ];
 
 const corsOptions = {
