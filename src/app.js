@@ -56,6 +56,9 @@ app.use((req, res, next) => {
 });
 
 // Rutas
+app.get('/', (req, res) => {
+    res.send('HOLA EXPERTIS');
+});
 app.use('/api/', authRoues);
 app.use(matrizRoutes);
 app.use('/api/', solicitudesRoutes);
