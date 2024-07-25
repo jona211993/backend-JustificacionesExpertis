@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import config from "../config.js";
 
 export const signUp = async (req, res) => {
+  let pool
   try {
     const {
       id_cargo,
@@ -17,7 +18,7 @@ export const signUp = async (req, res) => {
       password,
     } = req.body;
     let sql = `spRegistrar_usuario '${id_cargo}', '${dni}', '${nombre}', '${apellido1}', '${apellido2}', '${direccion}', '${telefono}', '${fec_ingreso}', '${usuario}', '${password}'`;
-    const pool = await getConnection();
+    pool = await getConnection();
     const result = await pool.request().query(sql);
 
     // Verifica si hay datos en el recordset
@@ -43,14 +44,19 @@ export const signUp = async (req, res) => {
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: "Error interno del servidor" });
+  }finally {
+    if (pool) {
+      pool.close(); // Cerrar la conexión
+    }
   }
 };
 
 export const signIn = async (req, res) => {
+  let pool
   try {
     const { usuario, password } = req.body;
     let sql = `SELECT * FROM empleado where usuario='${usuario}' and contrasenia='${password}'`;
-    const pool = await getConnection();
+    pool = await getConnection();
     const result = await pool.request().query(sql);
     let usuarioEncontrado = result.recordset[0];
 
@@ -90,6 +96,10 @@ export const signIn = async (req, res) => {
     return res
       .status(500)
       .json({ error: "Error interno del servidor : " + error.message });
+  }finally {
+    if (pool) {
+      pool.close(); // Cerrar la conexión
+    }
   }
 };
 

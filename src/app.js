@@ -8,6 +8,7 @@ import matrizRoutes from './routes/matriz.routes.js';
 import justificacionesRoutes from './routes/justificaciones.routes.js';
 import solicitudesRoutes from './routes/solicitudes.routes.js';
 import pruebasRoutes from './routes/pruebas.routes.js';
+import empleadosStaffRoutes from './routes/empleadosStaff.routes.js';
 
 const app = express();
 
@@ -64,5 +65,6 @@ app.use(matrizRoutes);
 app.use('/api/', solicitudesRoutes);
 app.use('/api/', justificacionesRoutes);
 app.use('/api/', pruebasRoutes);
+app.use('/api/', empleadosStaffRoutes)
 
 export default app;

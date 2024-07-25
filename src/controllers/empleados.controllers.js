@@ -2,13 +2,14 @@ import { getConnection } from "../database/connection.js";
 import sql from "mssql";
 
 export const getAsesoresBySuper = async (req, res) => {
+   let pool
   
     const { grupo } = req.body;
     console.log(grupo)
     if(grupo=="ADMIN"){
       try {
         let sql = `spobtener_supervisores`
-        const pool = await getConnection();
+        pool = await getConnection();
         const result = await pool.request().query(sql);
         const data=result.recordset;
         console.log(data)
@@ -25,12 +26,17 @@ export const getAsesoresBySuper = async (req, res) => {
       } catch (error) {
         console.error("Error en la consulta SQL:", error.message); // Agrega esta línea para obtener información detallada del error
         return res.status(400).json({ message: "Error a  los super como  asesores" });
+      }finally {
+        if (pool) {
+          pool.close(); // Cerrar la conexión
+        }
       }
     }
     else{
+      let pool
       try {
         let sql = `spobtener_asesores_by_supervisor '${grupo}'`
-        const pool = await getConnection();
+        pool = await getConnection();
         const result = await pool.request().query(sql);
         const data=result.recordset;
         console.log(data)
@@ -47,6 +53,10 @@ export const getAsesoresBySuper = async (req, res) => {
       } catch (error) {
         console.error("Error en la consulta SQL:", error.message); // Agrega esta línea para obtener información detallada del error
         return res.status(400).json({ message: "Error al obtener asesores del supervisor" });
+      }finally {
+        if (pool) {
+          pool.close(); // Cerrar la conexión
+        }
       }
     }
   };

@@ -1,13 +1,12 @@
 import { getConnection } from "../database/connection.js";
-import sql from "mssql";
 
 export const getPruebasDeJustificacion = async (req, res) => {
-  
+    let pool
     const { id_justificacion } = req.params;
     console.log("El id de la justificacion recibido es = "+id_justificacion)
     try {
         let sql = `spobtener_pruebas_justif '${id_justificacion}'`
-        const pool = await getConnection();
+        pool = await getConnection();
         const result = await pool.request().query(sql);
         const data=result.recordset;
         console.log(data)
@@ -24,17 +23,22 @@ export const getPruebasDeJustificacion = async (req, res) => {
       } catch (error) {
         console.error("Error en la consulta SQL:", error.message); // Agrega esta línea para obtener información detallada del error
         return res.status(400).json({ message: "Error al obtener las pruebas" });
+      }finally {
+        if (pool) {
+          pool.close(); // Cerrar la conexión
+        }
       }
     
 };
   
 
 export const createPrueba = async(req,res) =>{
+  let pool
     const { id_justificacion , urlPrueba } = req.body;
   console.log(id_justificacion+urlPrueba)
   try {
     let sql = `sp_insertarEnPrueba '${id_justificacion}' , '${urlPrueba}'`
-    const pool = await getConnection();
+    pool = await getConnection();
     const result = await pool.request().query(sql);   
     if (result.rowsAffected[0]=1) {
         console.log("Filas afectadas : "+result.rowsAffected[0])
@@ -50,5 +54,10 @@ export const createPrueba = async(req,res) =>{
   } catch (error) {
     console.error("Error en la consulta SQL:", error.message); // Agrega esta línea para obtener información detallada del error
     return res.status(400).json({ message: "Error al crear la prueba" });
+  }finally {
+    if (pool) {
+      pool.close(); // Cerrar la conexión
+    }
   }
+
 }
