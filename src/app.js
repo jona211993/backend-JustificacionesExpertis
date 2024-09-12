@@ -9,6 +9,7 @@ import justificacionesRoutes from './routes/justificaciones.routes.js';
 import solicitudesRoutes from './routes/solicitudes.routes.js';
 import pruebasRoutes from './routes/pruebas.routes.js';
 import empleadosStaffRoutes from './routes/empleadosStaff.routes.js';
+import vacacionesRoutes from './routes/vacaciones.routes.js';
 
 const app = express();
 
@@ -19,8 +20,7 @@ app.use(cookieParser());
 // Lista de orígenes permitidos
 const allowedOrigins = [
     'https://expertis-erp.pages.dev',
-    'http://localhost:5173',
-    'https://e4bf-161-132-214-102.ngrok-free.app/api'
+    'http://localhost:5173' 
 ];
 
 const corsOptions = {
@@ -66,5 +66,6 @@ app.use('/api/', solicitudesRoutes);
 app.use('/api/', justificacionesRoutes);
 app.use('/api/', pruebasRoutes);
 app.use('/api/', empleadosStaffRoutes)
+app.use('/api/', vacacionesRoutes)
 
 export default app;

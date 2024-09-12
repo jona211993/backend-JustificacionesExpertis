@@ -67,7 +67,10 @@ export const signIn = async (req, res) => {
         id_grupo: usuarioEncontrado.id_grupo,
         usuario: usuarioEncontrado.usuario,
         estado: usuarioEncontrado.estado,
-        
+        idEmpleado: usuarioEncontrado.idEmpleado,
+        idArea: usuarioEncontrado.idArea,
+        idJefe:usuarioEncontrado.idJefe 
+
       };
 
       const token = jwt.sign(
